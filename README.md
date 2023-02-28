@@ -2,6 +2,8 @@
 
 This Shiny app provides a real-time view of monkeypox trends in Europe. The dashboard allows users to explore the latest data on monkeypox cases in different countries, using interactive visualizations that update dynamically as the user changes the input parameters.
 
+<img src="thumbnail.png" width="50%" height="50%">
+
 ## Getting started
 
 To run the app, you will need to have R and the following packages installed:
