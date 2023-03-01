@@ -21,7 +21,9 @@ install.packages(c("tidyverse", "lubridate", "shiny", "shinythemes", "plotly", "
 
 The monkeypox dataset is updated by the `mpox.R` script. It downloads the latest monkeypox data from the European Centre for Disease Prevention and Control (ECDC) and saves it as a CSV file in the data directory. The `app.R` script reads this data file and generates the visualizations in the app.
 
-Run the app by opening the app.R file in RStudio and clicking on the "Run App" button.
+Run the app by opening the `app.R` file in RStudio and clicking on the "Run App" button.
+
+You can also access the app [here](https://ccyhui.shinyapps.io/mpox-shiny).
 
 ## Using the app
 
@@ -41,4 +43,6 @@ The monkeypox data used in this app was obtained from the European Centre for Di
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+## Acknowledgments
 
+This app was created as a personal project. Please contact me iIf you have any feedback or suggestions for improvement.
