@@ -47,4 +47,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-This app was created as a personal project. Please contact me iIf you have any feedback or suggestions for improvement.
+This app was created as a personal project. Please contact me if you have any feedback or suggestions for improvement.
