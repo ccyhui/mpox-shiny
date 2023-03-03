@@ -3,6 +3,7 @@ source('mpox.R')
 library(shiny)
 library(shinythemes)
 library(shinydashboard)
+library(shinyWidgets)
 library(plotly)
 library(zoo)
 library(tidyverse)
@@ -14,7 +15,7 @@ top_countries <- mpox %>%
     group_by(country) %>%
     summarize(total_cases=sum(cases)) %>%
     arrange(desc(total_cases)) %>%
-    slice(1:8) %>%
+    slice(1:11) %>%
     pull(country)
 
 plot_cases <- function(mpox_data, countries, end_date, metric=c('new', 'cumulative', 'smooth')){
@@ -75,7 +76,13 @@ plot_heatmap <- function(mpox_data, countries, end_date, metric=c('new', 'cumula
 }
 
 summ_box <- function(mpox_data, end_date){
-        
+    
+    latest_cases <- mpox_data %>%
+        filter(date<=as_date(end_date),
+               country=='All') %>%
+        pull(cases) %>%
+        tail(1)
+    
     cum_cases <- mpox_data %>%
         filter(date<=as_date(end_date),
                country=='All') %>%
@@ -91,11 +98,14 @@ summ_box <- function(mpox_data, end_date){
         pull(country) %>%
         n_distinct()
     
-    return(c(cum_cases, total_countries))
+    return(c(latest_cases, cum_cases, total_countries))
     
 }
 
 ui <- fluidPage(
+    
+    useShinydashboard(),
+    
     theme=shinytheme('flatly'),
     navbarPage(
         title='Monkeypox in Europe',
@@ -108,13 +118,14 @@ ui <- fluidPage(
                     selectInput('metric', 'Metric', c('New'='new', 'Cumulative'='cumulative', 'Smooth'='smooth'))
                 ),
                 mainPanel(
+                    fluidRow(
+                        valueBoxOutput('cum_cases_box'),
+                        valueBoxOutput('latest_cases_box'),
+                        valueBoxOutput('total_countries_box')
+                    ),
                     tabsetPanel(
                         tabPanel('Line Chart', plotlyOutput('line_plot')),
                         tabPanel('Heatmap', plotlyOutput('heatmap'))
-                    ),
-                    fluidRow(
-                        valueBoxOutput('cum_cases_box'),
-                        valueBoxOutput('total_countries_box')
                     )
                 )
             )
@@ -124,33 +135,42 @@ ui <- fluidPage(
 
 server <- function(input, output) {
     
+    output$line_plot <- renderPlotly({
+        plot_cases(mpox, input$countries, input$end_date, input$metric)
+    })
+    
+    output$heatmap <- renderPlotly({
+        plot_heatmap(mpox, input$countries, input$end_date, input$metric)
+    })
+    
     output$cum_cases_box <- renderValueBox({
-        cum_cases <- summ_box(mpox, input$end_date)[1]
-        # date_str <- format(input$end_date, '%d %b %Y')
+        cum_cases <- summ_box(mpox, input$end_date)[2]
         valueBox(
             cum_cases,
-            paste('Total Cases'),
+            paste('Cumulative Cases'),
             icon=icon('chart-line'),
             color='purple'
         )
     })
     
-    output$total_countries_box <- renderValueBox({
-        total_countries <- summ_box(mpox, input$end_date)[2]
-        # date_str <- format(input$end_date, '%d %b %Y')
+    output$latest_cases_box <- renderValueBox({
+        latest_cases <- summ_box(mpox, input$end_date)[1]
         valueBox(
-            total_countries,
-            paste('Total Countries'),
-            icon=icon('globe'),
-            color='blue'
+            latest_cases,
+            paste('Latest Confirmed Cases'),
+            icon=icon('check-circle'),
+            color='light-blue'
         )
     })
     
-    output$line_plot <- renderPlotly({
-        plot_cases(mpox, input$countries, input$end_date, input$metric)
-    })
-    output$heatmap <- renderPlotly({
-        plot_heatmap(mpox, input$countries, input$end_date, input$metric)
+    output$total_countries_box <- renderValueBox({
+        total_countries <- summ_box(mpox, input$end_date)[3]
+        valueBox(
+            total_countries,
+            paste('Affected Countries'),
+            icon=icon('globe'),
+            color='blue'
+        )
     })
 }
 
