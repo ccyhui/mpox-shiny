@@ -8,17 +8,19 @@ This Shiny app provides a real-time view of monkeypox trends in Europe. The dash
 
 To run the app, you will need to have R and the following packages installed:
 
-- tidyverse
-- lubridate
 - shiny
 - shinythemes
+- shinydashboard
+- shinyWidgets
 - plotly
 - zoo
+- tidyverse
+- lubridate
 
 You can install these packages by running the following code in R:
 
 ```
-install.packages(c("tidyverse", "lubridate", "shiny", "shinythemes", "plotly", "zoo"))
+install.packages(c('shiny', 'shinythemes', 'shinydashboard', 'shinyWidgets', 'plotly', 'zoo', 'tidyverse', 'lubridate'))
 ```
 
 The monkeypox dataset is updated by the `mpox.R` script. It downloads the latest monkeypox data from the European Centre for Disease Prevention and Control (ECDC) and saves it as a CSV file in the data directory. The `app.R` script reads this data file and generates the visualizations in the app.
